@@ -8,8 +8,10 @@ database_path = 'postgres://{}/{}'.format(database_host, database_name)
 
 db = SQLAlchemy
 
-def setup_db(app, database_path = database_path):
+
+def setup_db(app, database_path=database_path):
     pass
+
 
 class Recipe(db.Model):
     __tablename__ = 'Recipe'
@@ -25,7 +27,8 @@ class Recipe(db.Model):
     user = db.relationship('User', backref='User')
     category = db.relationship('Category', backref='Category')
 
-    def __init__(self, title, description, ingredients, steps, url, language, user, category):
+    def __init__(self, title, description, ingredients,
+                 steps, url, language, user, category):
         self.title = title
         self.description = description
         self.ingredients = ingredients
@@ -78,6 +81,7 @@ class Category(db.Model):
 
 #     recipe_id = db.Column(db.Integer, db.ForeignKey('Recipe.id'))
 
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
@@ -97,6 +101,7 @@ class Category(db.Model):
             'slug': self.slug,
             'language': self.language
         }
+
 
 class Comment(db.Model):
     __tablename__ = 'Comment'
@@ -126,4 +131,3 @@ class Comment(db.Model):
             'comment': self.comment,
             'recipe_id': self.recipe_id
         }
-
