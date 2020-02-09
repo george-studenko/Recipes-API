@@ -2,6 +2,7 @@ import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from backend.models.db_config import  setup_db
 
 def create_app(test_config=None):
   # create and configure the app
@@ -13,4 +14,5 @@ def create_app(test_config=None):
 APP = create_app()
 
 if __name__ == '__main__':
+    setup_db(APP)
     APP.run(host='0.0.0.0', port=8080, debug=True)
