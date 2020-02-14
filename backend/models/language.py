@@ -1,4 +1,4 @@
-from backend.models.db_config import db
+from main import db
 
 class Language(db.Model):
     __tablename__ = 'Language'
