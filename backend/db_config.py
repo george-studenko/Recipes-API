@@ -16,6 +16,9 @@ def setup_db(app, database_path=database_path):
     print('db.app: ',app)
     db.init_app(SQLAlchemy,app)
     print('db.init EXECUTED')
+    db.create_all(SQLAlchemy)
+    print('db.create_all EXECUTED')
+
     #migrate = Migrate(app, db)
 
 

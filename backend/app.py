@@ -1,8 +1,6 @@
-import os
-from flask import Flask, request, abort, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, jsonify
 from flask_cors import CORS
-from backend.models.db_config import setup_db
+from backend.db_config import setup_db
 
 
 def create_app(test_config=None):
