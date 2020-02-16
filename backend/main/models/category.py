@@ -10,8 +10,7 @@ class Category(db.Model):
 
     recipes = db.relationship('Recipe', backref='Category')
 
-    def __init__(self, name, description, slug, language):
-        self.language = language
+    def __init__(self, name, description, slug):
         self.slug = slug
         self.name = name
         self.description = description
@@ -32,6 +31,5 @@ class Category(db.Model):
             'id': self.id,
             'name': self.name,
             'description': self.description,
-            'slug': self.slug,
-            'language': self.language
+            'slug': self.slug
         }

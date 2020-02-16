@@ -6,7 +6,5 @@ class CategoryDTO:
     category = api.model('category', {
         'name': fields.String(required=True, description='Category name'),
         'description': fields.String(required=False, description='Category description'),
-        'slug': fields.String(required=False, description='Category url'),
-        'language': fields.String(required=False, description='Category language'),
-
+        'slug': fields.String(required=False, description='Category url')
     })

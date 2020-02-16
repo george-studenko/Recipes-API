@@ -1,5 +1,6 @@
 import json
 from backend.test.base_test_case import BaseTestCase
+from backend.main.services.category_service import post_category
 
 
 class CategoryTestCase(BaseTestCase):
@@ -18,11 +19,12 @@ class CategoryTestCase(BaseTestCase):
     def test_get_categories_name_is_category_1(self):
         # Arrange
         expected_value = 'Category 1'
+        post_category('Category 1', 'Category One', 'category-1')
 
         # Act
         result = self.client.get('/category/')
         content = json.loads(result.data)
-        actual_value = content['categories']['name']
+        actual_value = content['categories'][0]['name']
 
         # Assert
         self.assertEqual(actual_value, expected_value)
