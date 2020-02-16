@@ -11,19 +11,18 @@ class Recipe(db.Model):
     steps = db.Column(db.ARRAY(db.String(1000)))
     url = db.Column(db.String)
 
-    language = db.relationship('Language', backref='Language')
-    user = db.relationship('User', backref='User')
-    category = db.relationship('Category', backref='Category')
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('Category.id'), nullable=False)
 
     def __init__(self, title, description, ingredients,
-                 steps, url, language, user, category):
+                 steps, url, language, user_id, category):
         self.title = title
         self.description = description
         self.ingredients = ingredients
         self.steps = steps
         self.url = url
         self.language = language
-        self.user = user
+        self.user_id = user_id
         self.category = category
 
     def insert(self):
@@ -46,6 +45,6 @@ class Recipe(db.Model):
             'steps': self.steps,
             'url': self.url,
             'language': self.language,
-            'user': self.user,
+            'user_id': self.user_id,
             'category': self.category
         }

@@ -3,7 +3,7 @@ from flask_migrate import Migrate, MigrateCommand
 from backend.main import create_app, db
 from backend import blueprint
 import unittest
-from backend.main.models import recipe, category, comment, language
+from backend.main.models import recipe, category, comment, user
 
 app = create_app()
 app.register_blueprint(blueprint)
@@ -19,6 +19,7 @@ manager.add_command('db', MigrateCommand)
 @manager.command
 def run():
     app.run()
+
 
 @manager.command
 def test():

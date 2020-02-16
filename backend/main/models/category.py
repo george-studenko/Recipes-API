@@ -7,7 +7,8 @@ class Category(db.Model):
     name = db.Column(db.String)
     description = db.Column(db.String)
     slug = db.Column(db.String)
-    language = db.relationship('language', backref='Language')
+
+    recipes = db.relationship('Recipe', backref='Category')
 
     def __init__(self, name, description, slug, language):
         self.language = language
