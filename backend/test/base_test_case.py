@@ -9,7 +9,6 @@ class BaseTestCase(TestCase):
 
     def create_app(self):
         app.config.from_object('backend.main.config.Test_Config')
-        print('base create_app')
         return app
 
     def setUp(self):

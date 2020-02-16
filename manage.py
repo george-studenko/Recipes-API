@@ -25,7 +25,6 @@ def test():
     """Runs unit test."""
     tests = unittest.TestLoader().discover('backend/test', pattern='test*.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
-    print('Tests were run using the db:',app.config['SQLALCHEMY_DATABASE_URI'])
     if result.wasSuccessful():
         return 0
     return 1
