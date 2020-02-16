@@ -1,4 +1,4 @@
-from main import db
+from backend.main import db
 
 class Category(db.Model):
     __tablename__ = 'Category'
