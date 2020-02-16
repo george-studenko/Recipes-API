@@ -5,6 +5,7 @@ from backend.main.dtos import HealthyDTO
 api = HealthyDTO.HealthyDTO.api
 dto = HealthyDTO.HealthyDTO.health
 
+
 @api.route('/')
 class Healthy(Resource):
     @api.doc('Check health of the API')

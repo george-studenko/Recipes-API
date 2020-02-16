@@ -27,3 +27,6 @@ It should return a ```200``` response with the following content:
     "message": "Service is up and running"
 }
 ```
+
+## TO DO
+1. Implement scriptline to automate database creation.
