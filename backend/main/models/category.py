@@ -4,7 +4,7 @@ class Category(db.Model):
     __tablename__ = 'Category'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
     slug = db.Column(db.String)
 
@@ -17,7 +17,9 @@ class Category(db.Model):
 
     def insert(self):
         db.session.add(self)
+        db.session.flush()
         db.session.commit()
+        return self
 
     def update(self):
         db.session.commit()
