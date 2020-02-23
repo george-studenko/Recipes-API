@@ -9,6 +9,12 @@ def get_categories():
     return response
 
 
+def get_category_by_id(id):
+    response = Category.query.get(id)
+
+    return response
+
+
 def post_category(data):
     data = data['category']
 
