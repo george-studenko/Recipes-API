@@ -1,5 +1,6 @@
 from flask_restplus import Api
 from flask import Blueprint
+from backend.main.API_Exceptions import *
 
 # import controllers
 from .main.controllers.health_controller import api as health_ns
@@ -16,4 +17,13 @@ api = Api(blueprint,
 
 # set resources main route
 api.add_namespace(health_ns, path='/health')
+
+
+@category_ns.errorhandler(UnprocessableError)
+def unprocessable_entity(exception):
+    return {
+               'error': exception.error,
+               'success': False
+           }, 422
+
 api.add_namespace(category_ns, path='/category')

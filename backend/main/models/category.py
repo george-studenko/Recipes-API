@@ -30,8 +30,10 @@ class Category(db.Model):
 
     def format(self):
         return {
-            'id': self.id,
-            'name': self.name,
-            'description': self.description,
-            'slug': self.slug
+            'category':{
+                'id': self.id,
+                'name': self.name,
+                'description': self.description,
+                'slug': self.slug
+            }
         }
