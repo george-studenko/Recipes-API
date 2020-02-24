@@ -1,17 +1,19 @@
 from flask_testing import TestCase
-
-from __init__ import db
-from app import app
+import warnings
+from database import db
+from api import app
 
 
 class BaseTestCase(TestCase):
     """ Base Tests """
 
     def create_app(self):
-        app.config.from_object('backend.config.Test_Config')
+        app.config.from_object('api.config.Test_Config')
         return app
 
     def setUp(self):
+        warnings.filterwarnings("ignore")
+
         db.create_all()
         db.session.commit()
 

@@ -1,5 +1,5 @@
 import json
-from backend.base_test_case import BaseTestCase
+from base_test_case import BaseTestCase
 
 
 class CategoryTestCase(BaseTestCase):

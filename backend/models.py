@@ -1,4 +1,4 @@
-from backend import db
+from database import db
 
 class Recipe(db.Model):
     __tablename__ = 'Recipe'
