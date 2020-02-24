@@ -1,0 +1,21 @@
+{
+	"info": {
+		"_postman_id": "17bed30d-aeee-4c7f-8f61-51bb39836f12",
+		"name": "Recipes API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -1,24 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-
-
-database_name = 'recipesDB'
-database_host = 'localhost:5432'
-database_path = 'postgres://{}/{}'.format(database_host, database_name)
-
-db = SQLAlchemy()
-
-
-def setup_db(app, database_path=database_path):
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    db.app = app
-    print('db.app: ',app)
-    db.init_app(app)
-    print('db.init EXECUTED')
-    db.create_all()
-    print('db.create_all EXECUTED')
-
+from backend import db
 
 class Recipe(db.Model):
     __tablename__ = 'Recipe'
@@ -30,19 +10,18 @@ class Recipe(db.Model):
     steps = db.Column(db.ARRAY(db.String(1000)))
     url = db.Column(db.String)
 
-    language = db.relationship('Language', backref='Language')
-    user = db.relationship('User', backref='User')
-    category = db.relationship('Category', backref='Category')
+    user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('Category.id'), nullable=False)
 
     def __init__(self, title, description, ingredients,
-                 steps, url, language, user, category):
+                 steps, url, language, user_id, category):
         self.title = title
         self.description = description
         self.ingredients = ingredients
         self.steps = steps
         self.url = url
         self.language = language
-        self.user = user
+        self.user_id = user_id
         self.category = category
 
     def insert(self):
@@ -65,29 +44,30 @@ class Recipe(db.Model):
             'steps': self.steps,
             'url': self.url,
             'language': self.language,
-            'user': self.user,
+            'user_id': self.user_id,
             'category': self.category
         }
-
 
 class Category(db.Model):
     __tablename__ = 'Category'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     description = db.Column(db.String)
-    slug = db.column(db.String)
-    language = db.relationship('language', backref='Language')
+    slug = db.Column(db.String)
 
-    def __init__(self, name, description, slug, language):
-        self.language = language
+    recipes = db.relationship('Recipe', backref='Category')
+
+    def __init__(self, name, description= None, slug= None):
         self.slug = slug
         self.name = name
         self.description = description
 
     def insert(self):
         db.session.add(self)
+        db.session.flush()
         db.session.commit()
+        return self
 
     def update(self):
         db.session.commit()
@@ -98,66 +78,20 @@ class Category(db.Model):
 
     def format(self):
         return {
-            'id': self.id,
-            'name': self.name,
-            'description': self.description,
-            'slug': self.slug,
-            'language': self.language
+                'id': self.id,
+                'name': self.name,
+                'description': self.description,
+                'slug': self.slug
         }
 
-
-class Comment(db.Model):
-    __tablename__ = 'Comment'
+class User(db.Model):
+    __tablename__ = 'User'
 
     id = db.Column(db.Integer, primary_key=True)
-    comment = db.Column(db.String)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('Recipe.id'))
-
-    def __init__(self, comment, recipe_id):
-        self.comment = comment
-        self.recipe_id = recipe_id
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def format(self):
-        return {
-            'id': self.id,
-            'comment': self.comment,
-            'recipe_id': self.recipe_id
-        }
+    username = db.Column(db.String)
+    recipes = db.relationship('Recipe', backref='user')
 
 
-class Language(db.Model):
-    __tablename__ = 'Language'
-
-    id = db.Column(db.Integer, primary_key=True)
-    language = db.Column(db.String)
-
-    def __init__(self, language):
-        self.language = language
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
-    def format(self):
-        return {
-            'id': self.id,
-            'language': self.language
-        }
+    def __init__(self, id, username):
+        #self.id = id
+        self.username = username
