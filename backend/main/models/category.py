@@ -10,7 +10,7 @@ class Category(db.Model):
 
     recipes = db.relationship('Recipe', backref='Category')
 
-    def __init__(self, name, description, slug):
+    def __init__(self, name, description= None, slug= None):
         self.slug = slug
         self.name = name
         self.description = description
