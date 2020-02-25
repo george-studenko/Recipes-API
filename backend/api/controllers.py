@@ -4,15 +4,16 @@ from . import create_app
 
 app = create_app()
 
-
+# region Health Controller
 @app.route('/health')
 def check_health():
     response = jsonify({'healthy': True,
                         'message': 'Service is up and running'}
                        )
     return response
+# endregion
 
-
+# region Category Controller
 @app.route('/category', methods=['GET'])
 def get_categories():
     '''Get the list of all cagegories'''
@@ -99,8 +100,9 @@ def patch(id):
         'category': original_category.format()
     })
     return response, 200
+# endregion
 
-
+# region Error Handlers
 @app.errorhandler(422)
 def unprocessable_entity(error):
     return jsonify(
@@ -119,12 +121,15 @@ def not_found(error):
         'success': False
         }
         ), 404
+# endregion
 
-# Helper methods
+
+# region Helper Methods
 def create_category_from_json(json_data):
        return Category(name=json_data.get('name'),
                        description= json_data.get('description'),
                        slug=json_data.get('slug'))
+# endregion
 
 if __name__ == '__main__':
     app.run()
