@@ -6,7 +6,6 @@ from database import db
 from .config import environments
 
 
-
 def setup_db(app, environment):
     app.config.from_object(environments[environment])
     db.app = app
@@ -43,6 +42,20 @@ def get_categories():
     }), 200
 
 
+@app.route('/category/<id>', methods=['GET'])
+def get_category(id):
+    """Get a category given its id"""
+    category = Category.query.get(id)
+    if not category:
+        abort(404)
+
+    response = jsonify({
+        'success': True,
+        'category': category.format()
+    })
+    return response
+
+
 @app.route('/category', methods=['POST'])
 def post_category():
     '''Creates a new category'''
@@ -62,9 +75,50 @@ def post_category():
 
     return response, 201
 
+
+@app.route('/category/<id>', methods=['DELETE'])
+def delete(id):
+    '''Delete a category by id'''
+    category = Category.query.get(id)
+    if category is None:
+        abort(404)
+
+    category.delete()
+    response = jsonify( {
+        'success': True
+    })
+    return response, 200
+
+
+@app.route('/category/<id>', methods=['PATCH'])
+def patch(id):
+    original_category =  Category.query.get(id)
+    if original_category is None:
+        abort(404,'category does not exist')
+
+    json_category = request.get_json()
+    category = create_category_from_json(json_category['category'])
+
+    if category.description is not None:
+        original_category.description = category.description
+
+    if category.name is not None:
+        original_category.name = category.name
+
+    if category.slug is not None:
+        original_category.slug = category.slug
+
+    original_category.update()
+
+    response = jsonify({
+        'success': True,
+        'category': original_category.format()
+    })
+    return response, 200
+
+
 @app.errorhandler(422)
 def unprocessable_entity(error):
-    print(error)
     return jsonify(
         {
         'error': str(error),
@@ -72,53 +126,15 @@ def unprocessable_entity(error):
         }
         ), 422
 
+
 @app.errorhandler(404)
 def not_found(error):
-    print(error)
     return jsonify(
         {
         'error': str(error),
         'success': False
         }
         ), 404
-
-#
-#
-# @api.route('/<id>')
-# @api.param('id', 'The Category id')
-# @api.response(404, 'User not found.')
-# class Category(Resource):
-# @api.doc('get a category by id')
-# @api.marshal_with(dto)
-# def get(self, id):
-#     """Get a category given its id"""
-#     category = service.get_category_by_id(id)
-#     if not category:
-#         api.abort(404)
-#     return category
-#
-# @api.doc('update a category by id')
-# def patch(self, id):
-#     '''To partially update a category'''
-#     category = request.get_json()
-#     response = service.patch(id, category)
-#     return response
-#
-# @api.doc('delete a category by id')
-# def delete(self, id):
-#     '''Delete a category by id'''
-#     response = service.delete_category_by_id(id)
-#     if response is None:
-#         abort(404)
-#     return response, 200
-#
-# # TODO: errorhandler not working
-# @api.errorhandler(UnprocessableError)
-# def unprocessable_entity(exception):
-#     return {
-#         'error': exception.error,
-#         'success': False
-#     }, 422
 
  # Helper methods
 def create_category_from_json(json_data):

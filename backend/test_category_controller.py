@@ -1,6 +1,6 @@
 import json
 from base_test_case import BaseTestCase
-
+import unittest
 
 class CategoryTestCase(BaseTestCase):
 
@@ -44,7 +44,7 @@ class CategoryTestCase(BaseTestCase):
         # Act
         result = self.client.get('/category')
         content = json.loads(result.data)
-        actual_value = content[0]['name']
+        actual_value = content['categories'][0]['name']
 
         # Assert
         self.assertEqual(actual_value, expected_value)
@@ -58,7 +58,7 @@ class CategoryTestCase(BaseTestCase):
         # Act
         result = self.client.get('/category/1')
         content = json.loads(result.data)
-        actual_value = content['name']
+        actual_value = content['category']['name']
 
         # Assert
         self.assertEqual(actual_value, expected_value)
@@ -96,9 +96,9 @@ class CategoryTestCase(BaseTestCase):
 
         # Act
         result = self.client.get('/category')
-        actual_category_count = len(json.loads(result.data))
+        actual_category_count = len(json.loads(result.data)['categories'])
 
-        self.assertEqual(expected_category_count,actual_category_count)
+        self.assertEqual(expected_category_count, actual_category_count)
 
     def test_post_category_status_code_is_201(self):
         # Arrange
@@ -124,17 +124,6 @@ class CategoryTestCase(BaseTestCase):
         # Assert
         self.assertEqual(actual_status_code, expected_status_code)
 
-    def test_post_category_status_code_is_201(self):
-        # Arrange
-        expected_status_code = 201
-
-        # Act
-        result = self.post_test_category()
-
-        actual_status_code = result.status_code
-
-        # Assert
-        self.assertEqual(actual_status_code, expected_status_code)
 
     def test_delete_category(self):
         # Arrange
@@ -165,7 +154,7 @@ class CategoryTestCase(BaseTestCase):
     def test_delete_category_status_code_is_404_when_not_found(self):
         # Arrange
         expected_status_code = 404
-        self.post_test_category()
+        category = self.post_test_category()
 
         # Act
         result = self.client.delete('/category/182')
@@ -182,14 +171,13 @@ class CategoryTestCase(BaseTestCase):
         # Act
         category = dict(category=dict(name=expected_category_name))
 
-        self.client.patch('/category/1',
+        result = self.client.patch('/category/1',
                           data= json.dumps(category),
                           content_type = 'application/json')
 
-        result = self.client.get('/category/1')
 
         content = json.loads(result.data)
-        actual_category_name = content['name']
+        actual_category_name = content['category']['name']
 
         # Assert
         self.assertEqual(actual_category_name, expected_category_name)
@@ -203,14 +191,17 @@ class CategoryTestCase(BaseTestCase):
         # Act
         category = dict(category=dict(name=new_category_name))
 
-        self.client.patch('/category/1',
+        result = self.client.patch('/category/1',
                           data= json.dumps(category),
                           content_type = 'application/json')
 
-        result = self.client.get('/category/1')
 
         content = json.loads(result.data)
-        actual_category_description = content['description']
+        actual_category_description = content['category']['description']
 
         # Assert
         self.assertEqual(actual_category_description, expected_description)
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
+    unittest.main()
