@@ -1,7 +1,7 @@
 from flask_testing import TestCase
 import warnings
 from database import db
-from api import app
+from api.controllers import app
 
 
 class BaseTestCase(TestCase):
