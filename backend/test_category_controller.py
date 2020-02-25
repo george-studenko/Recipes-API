@@ -2,6 +2,7 @@ import json
 from base_test_case import BaseTestCase
 import unittest
 
+
 class CategoryTestCase(BaseTestCase):
 
     def post_test_category(self, name = 'Category 1'):

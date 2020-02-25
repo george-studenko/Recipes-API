@@ -13,6 +13,64 @@ def check_health():
     return response
 # endregion
 
+# region User Controller
+@app.route('/user', methods=['POST'])
+def post_user():
+    '''Creates a new recipe'''
+    json = request.get_json()
+
+    data = json['user']
+
+    if data.get('username') is None:
+        abort(422,'username is required')
+    user = create_user_from_json(data)
+    inserted_user = user.insert()
+
+    response = jsonify({
+        'success': True,
+        'recipe': inserted_user.format()
+    })
+
+    return response, 201
+
+# endregion
+
+
+# region Recipe Controller
+@app.route('/recipe', methods=['GET'])
+def get_recipes():
+    '''Get the list of all recipes'''
+    recipes = Recipe.query.all()
+    if len(recipes) is 0:
+        abort(404,'No recipes found')
+    formatted_recipes = [recipe.format() for recipe in recipes]
+    return jsonify({
+        'success': True,
+        'recipes': formatted_recipes
+    }), 200
+
+@app.route('/recipe', methods=['POST'])
+def post_recipe():
+    '''Creates a new recipe'''
+    json = request.get_json()
+
+    data = json['recipe']
+    if data.get('title') is None:
+        abort(422,'Title is required')
+
+    recipe = create_recipe_from_json(data)
+    inserted_recipe = recipe.insert()
+
+    response = jsonify({
+        'success': True,
+        'recipe': inserted_recipe.format()
+    })
+
+    return response, 201
+
+# endregion
+
+
 # region Category Controller
 @app.route('/category', methods=['GET'])
 def get_categories():
@@ -129,6 +187,21 @@ def create_category_from_json(json_data):
        return Category(name=json_data.get('name'),
                        description= json_data.get('description'),
                        slug=json_data.get('slug'))
+
+def create_recipe_from_json(json_data):
+    return Recipe(title=json_data.get('title'),
+                    description=json_data.get('description'),
+                    ingredients=json_data.get('ingredients'),
+                    steps=json_data.get('steps'),
+                    url=json_data.get('url'),
+                    user_id=json_data.get('user_id'),
+                    category_id = json_data.get('category_id')
+                  )
+
+
+def create_user_from_json(json_data):
+    return User(username=json_data.get('username'))
+
 # endregion
 
 if __name__ == '__main__':
