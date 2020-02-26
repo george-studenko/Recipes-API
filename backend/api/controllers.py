@@ -37,8 +37,9 @@ def check_health():
 
 # region User Controller
 @app.route('/user', methods=['POST'])
+@requires_auth(permission='post:user')
 def post_user():
-    '''Creates a new recipe'''
+    '''Creates a new user'''
     json = request.get_json()
 
     data = json['user']
@@ -60,6 +61,7 @@ def post_user():
 
 # region Recipe Controller
 @app.route('/recipe', methods=['GET'])
+@requires_auth(permission='get:recipe')
 def get_recipes():
     '''Get the list of all recipes'''
     recipes = Recipe.query.all()
@@ -72,6 +74,7 @@ def get_recipes():
     }), 200
 
 @app.route('/recipe/<id>', methods=['GET'])
+@requires_auth(permission='get:recipe')
 def get_recipe(id):
     """Get a recipe given its id"""
     recipe = Recipe.query.get(id)
@@ -85,6 +88,7 @@ def get_recipe(id):
     return response
 
 @app.route('/recipe', methods=['POST'])
+@requires_auth(permission='post:recipe')
 def post_recipe():
     '''Creates a new recipe'''
     json = request.get_json()
@@ -105,6 +109,7 @@ def post_recipe():
 
 
 @app.route('/recipe/<id>', methods=['DELETE'])
+@requires_auth(permission='delete:recipe')
 def delete_recipe(id):
     '''Delete a recipe by id'''
     recipe = Recipe.query.get(id)
@@ -119,6 +124,7 @@ def delete_recipe(id):
 
 
 @app.route('/recipe/<id>', methods=['PATCH'])
+@requires_auth(permission='patch:recipe')
 def patch_recipe(id):
     original_recipe =  Recipe.query.get(id)
     if original_recipe is None:
@@ -149,6 +155,7 @@ def patch_recipe(id):
 
 # region Category Controller
 @app.route('/category', methods=['GET'])
+@requires_auth(permission='get:category')
 def get_categories():
     '''Get the list of all cagegories'''
     categories = Category.query.all()
@@ -177,6 +184,7 @@ def get_category(id):
 
 
 @app.route('/category', methods=['POST'])
+@requires_auth(permission='post:category')
 def post_category():
     '''Creates a new category'''
     json = request.get_json()
@@ -197,6 +205,7 @@ def post_category():
 
 
 @app.route('/category/<id>', methods=['DELETE'])
+@requires_auth(permission='delete:category')
 def delete_category(id):
     '''Delete a category by id'''
     category = Category.query.get(id)
@@ -211,6 +220,7 @@ def delete_category(id):
 
 
 @app.route('/category/<id>', methods=['PATCH'])
+@requires_auth(permission='patch:category')
 def patch_category(id):
     original_category =  Category.query.get(id)
     if original_category is None:

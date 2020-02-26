@@ -12,7 +12,8 @@ class CategoryTestCase(BaseTestCase):
 
         result = self.client.post('/category',
                                   data= json.dumps(test_category),
-                                  content_type = 'application/json')
+                                  content_type = 'application/json',
+                                  headers = self.chef_bearer_token)
 
         return result
 
@@ -22,7 +23,8 @@ class CategoryTestCase(BaseTestCase):
 
         result = self.client.post('/category',
                                   data= json.dumps(test_category),
-                                  content_type = 'application/json')
+                                  content_type = 'application/json',
+                                  headers = self.chef_bearer_token)
 
         return result
 
@@ -31,7 +33,7 @@ class CategoryTestCase(BaseTestCase):
         expected_status_code = 200
 
         # Act
-        result = self.client.get('/category')
+        result = self.client.get('/category', headers = self.cook_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -43,7 +45,7 @@ class CategoryTestCase(BaseTestCase):
         self.post_test_category()
 
         # Act
-        result = self.client.get('/category')
+        result = self.client.get('/category', headers = self.cook_bearer_token)
         content = json.loads(result.data)
         actual_value = content['categories'][0]['name']
 
@@ -96,7 +98,7 @@ class CategoryTestCase(BaseTestCase):
             self.post_test_category()
 
         # Act
-        result = self.client.get('/category')
+        result = self.client.get('/category', headers = self.cook_bearer_token)
         actual_category_count = len(json.loads(result.data)['categories'])
 
         self.assertEqual(expected_category_count, actual_category_count)
@@ -132,7 +134,7 @@ class CategoryTestCase(BaseTestCase):
         self.post_test_category()
 
         # Act
-        self.client.delete('/category/1')
+        self.client.delete('/category/1', headers = self.chef_bearer_token)
 
         result = self.client.get('/category/1', headers = self.cook_bearer_token)
         actual_status_code = result.status_code
@@ -146,7 +148,7 @@ class CategoryTestCase(BaseTestCase):
         self.post_test_category()
 
         # Act
-        result = self.client.delete('/category/1')
+        result = self.client.delete('/category/1', headers = self.chef_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -158,7 +160,7 @@ class CategoryTestCase(BaseTestCase):
         category = self.post_test_category()
 
         # Act
-        result = self.client.delete('/category/182')
+        result = self.client.delete('/category/182', headers = self.chef_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -173,8 +175,9 @@ class CategoryTestCase(BaseTestCase):
         category = dict(category=dict(name=expected_category_name))
 
         result = self.client.patch('/category/1',
-                          data= json.dumps(category),
-                          content_type = 'application/json')
+                                   data= json.dumps(category),
+                                   content_type = 'application/json',
+                                   headers = self.chef_bearer_token)
 
 
         content = json.loads(result.data)
@@ -194,7 +197,8 @@ class CategoryTestCase(BaseTestCase):
 
         result = self.client.patch('/category/1',
                           data= json.dumps(category),
-                          content_type = 'application/json')
+                          content_type = 'application/json',
+                                   headers = self.chef_bearer_token)
 
 
         content = json.loads(result.data)

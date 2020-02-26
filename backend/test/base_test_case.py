@@ -10,6 +10,10 @@ class BaseTestCase(TestCase):
     cook_bearer_token = {
         'Authorization': bearer_tokens['cook']
     }
+
+    chef_bearer_token = {
+        'Authorization': bearer_tokens['chef']
+    }
     def create_app(self):
         app.config.from_object('infraestructure.config.Test_Config')
         return app

@@ -6,17 +6,20 @@ import unittest
 class RecipeTestCase(BaseTestCase):
 
     def post_test_recipe(self, title = 'Recipe 1'):
+
         test_category = dict(category=dict(name='Category 1',
                                            description='category description',
                                            slug='category-slug'))
         self.client.post('/category',
                                   data=json.dumps(test_category),
-                                  content_type='application/json')
+                                  content_type='application/json',
+                         headers = self.chef_bearer_token)
 
         test_user = dict(user=dict(username='username1'))
         self.client.post('/user',
                          data=json.dumps(test_user),
-                         content_type='application/json')
+                         content_type='application/json',
+                         headers = self.chef_bearer_token)
 
         test_recipe = dict(recipe=dict(title=title,
                                   description='recipe description',
@@ -27,7 +30,8 @@ class RecipeTestCase(BaseTestCase):
 
         result = self.client.post('/recipe',
                                   data= json.dumps(test_recipe),
-                                  content_type = 'application/json')
+                                  content_type = 'application/json',
+                                  headers = self.chef_bearer_token)
 
         return result
 
@@ -37,7 +41,8 @@ class RecipeTestCase(BaseTestCase):
 
         result = self.client.post('/recipe',
                                   data= json.dumps(test_recipe),
-                                  content_type = 'application/json')
+                                  content_type = 'application/json',
+                                  headers = self.chef_bearer_token)
 
         return result
 
@@ -47,7 +52,7 @@ class RecipeTestCase(BaseTestCase):
         self.post_test_recipe()
 
         # Act
-        result = self.client.get('/recipe')
+        result = self.client.get('/recipe', headers = self.cook_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -58,7 +63,7 @@ class RecipeTestCase(BaseTestCase):
         expected_status_code = 404
 
         # Act
-        result = self.client.get('/recipe')
+        result = self.client.get('/recipe', headers = self.cook_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -95,7 +100,7 @@ class RecipeTestCase(BaseTestCase):
         self.post_test_recipe(title = 'Another Recipe 2')
 
         # Act
-        result = self.client.get('/recipe/1')
+        result = self.client.get('/recipe/1', headers = self.cook_bearer_token)
         content = json.loads(result.data)
         actual_value = content['recipe']['title']
 
@@ -107,7 +112,7 @@ class RecipeTestCase(BaseTestCase):
         expected_status_code = 404
 
         # Act
-        result = self.client.get('/recipe/2')
+        result = self.client.get('/recipe/2', headers = self.cook_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -123,7 +128,7 @@ class RecipeTestCase(BaseTestCase):
             self.post_test_recipe()
 
         # Act
-        result = self.client.get('/recipe/1')
+        result = self.client.get('/recipe/1', headers = self.cook_bearer_token)
         actual_type = type(json.loads(result.data))
         self.assertEqual(expected_type, actual_type)
 
@@ -133,9 +138,9 @@ class RecipeTestCase(BaseTestCase):
         self.post_test_recipe()
 
         # Act
-        self.client.delete('/recipe/1')
+        self.client.delete('/recipe/1', headers = self.chef_bearer_token)
 
-        result = self.client.get('/recipe/1')
+        result = self.client.get('/recipe/1', headers = self.cook_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -147,7 +152,7 @@ class RecipeTestCase(BaseTestCase):
         self.post_test_recipe()
 
         # Act
-        result = self.client.delete('/recipe/1')
+        result = self.client.delete('/recipe/1', headers = self.chef_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -159,7 +164,7 @@ class RecipeTestCase(BaseTestCase):
         self.post_test_recipe()
 
         # Act
-        result = self.client.delete('/recipe/182')
+        result = self.client.delete('/recipe/182', headers = self.chef_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -175,7 +180,7 @@ class RecipeTestCase(BaseTestCase):
 
         result = self.client.patch('/category/1',
                                    data=json.dumps(category),
-                                   content_type='application/json')
+                                   content_type='application/json', headers = self.chef_bearer_token)
 
         content = json.loads(result.data)
         actual_category_name = content['category']['name']
@@ -194,7 +199,7 @@ class RecipeTestCase(BaseTestCase):
 
         result = self.client.patch('/recipe/1',
                                    data=json.dumps(category),
-                                   content_type='application/json')
+                                   content_type='application/json', headers = self.chef_bearer_token)
 
         content = json.loads(result.data)
         actual_recipe_description = content['recipe']['description']
