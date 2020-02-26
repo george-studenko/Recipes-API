@@ -1,15 +1,37 @@
-from flask import jsonify, request, abort
-from models import *
-from . import create_app
+import sys
+from os.path import dirname, join, abspath
+sys.path.insert(0, abspath(join(dirname(__file__), '..')))
 
+from flask import jsonify, request, abort
+from domain.models import *
+from service.health_service import Health_Service
+from flask import Flask
+from flask_cors import CORS
+from infraestructure.database import db
+from infraestructure.config import environments
+from .authentication.auth import requires_auth
+
+
+def setup_db(app, environment):
+    app.config.from_object(environments[environment])
+    db.app = app
+    db.init_app(app)
+
+
+def create_app(environment='dev'):
+    app = Flask(__name__)
+    app.url_map.strict_slashes = False
+    setup_db(app, environment)
+    CORS(app)
+    return app
 app = create_app()
+
+health_service = Health_Service()
 
 # region Health Controller
 @app.route('/health')
 def check_health():
-    response = jsonify({'healthy': True,
-                        'message': 'Service is up and running'}
-                       )
+    response = health_service.check_health()
     return response
 # endregion
 
@@ -49,6 +71,19 @@ def get_recipes():
         'recipes': formatted_recipes
     }), 200
 
+@app.route('/recipe/<id>', methods=['GET'])
+def get_recipe(id):
+    """Get a recipe given its id"""
+    recipe = Recipe.query.get(id)
+    if not recipe:
+        abort(404)
+
+    response = jsonify({
+        'success': True,
+        'recipe': recipe.format()
+    })
+    return response
+
 @app.route('/recipe', methods=['POST'])
 def post_recipe():
     '''Creates a new recipe'''
@@ -68,6 +103,47 @@ def post_recipe():
 
     return response, 201
 
+
+@app.route('/recipe/<id>', methods=['DELETE'])
+def delete_recipe(id):
+    '''Delete a recipe by id'''
+    recipe = Recipe.query.get(id)
+    if recipe is None:
+        abort(404)
+
+    recipe.delete()
+    response = jsonify( {
+        'success': True
+    })
+    return response, 200
+
+
+@app.route('/recipe/<id>', methods=['PATCH'])
+def patch_recipe(id):
+    original_recipe =  Recipe.query.get(id)
+    if original_recipe is None:
+        abort(404,'category does not exist')
+
+    json_recipe = request.get_json()
+    recipe = create_category_from_json(json_recipe['recipe'])
+
+    if recipe.title is not None:
+        original_recipe.name = recipe.title
+
+    if recipe.description is not None:
+        original_recipe.description = recipe.description
+
+    if recipe.url is not None:
+        original_recipe.slug = recipe.url
+
+    original_recipe.update()
+
+    response = jsonify({
+        'success': True,
+        'recipe': original_recipe.format()
+    })
+    return response, 200
+
 # endregion
 
 
@@ -86,6 +162,7 @@ def get_categories():
 
 
 @app.route('/category/<id>', methods=['GET'])
+#@requires_auth(permission='get:category')
 def get_category(id):
     """Get a category given its id"""
     category = Category.query.get(id)
@@ -120,7 +197,7 @@ def post_category():
 
 
 @app.route('/category/<id>', methods=['DELETE'])
-def delete(id):
+def delete_category(id):
     '''Delete a category by id'''
     category = Category.query.get(id)
     if category is None:
@@ -134,7 +211,7 @@ def delete(id):
 
 
 @app.route('/category/<id>', methods=['PATCH'])
-def patch(id):
+def patch_category(id):
     original_category =  Category.query.get(id)
     if original_category is None:
         abort(404,'category does not exist')
@@ -204,5 +281,3 @@ def create_user_from_json(json_data):
 
 # endregion
 
-if __name__ == '__main__':
-    app.run()

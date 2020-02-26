@@ -1,4 +1,4 @@
-from database import db
+from infraestructure.database import db
 
 class Recipe(db.Model):
     __tablename__ = 'Recipe'
