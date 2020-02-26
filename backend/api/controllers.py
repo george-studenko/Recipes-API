@@ -125,7 +125,7 @@ def patch_recipe(id):
         abort(404,'category does not exist')
 
     json_recipe = request.get_json()
-    recipe = create_category_from_json(json_recipe['recipe'])
+    recipe = create_recipe_from_json(json_recipe['recipe'])
 
     if recipe.title is not None:
         original_recipe.name = recipe.title
@@ -162,7 +162,7 @@ def get_categories():
 
 
 @app.route('/category/<id>', methods=['GET'])
-#@requires_auth(permission='get:category')
+@requires_auth(permission='get:category')
 def get_category(id):
     """Get a category given its id"""
     category = Category.query.get(id)

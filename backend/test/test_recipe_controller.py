@@ -153,7 +153,7 @@ class RecipeTestCase(BaseTestCase):
         # Assert
         self.assertEqual(actual_status_code, expected_status_code)
 
-    def test_delete_category_status_code_is_404_when_not_found(self):
+    def test_delete_recipe_status_code_is_404_when_not_found(self):
         # Arrange
         expected_status_code = 404
         self.post_test_recipe()
@@ -165,7 +165,7 @@ class RecipeTestCase(BaseTestCase):
         # Assert
         self.assertEqual(actual_status_code, expected_status_code)
 
-    def test_patch_category_name(self):
+    def test_patch_recipe_name(self):
         # Arrange
         expected_category_name = 'Category Name Patched'
         self.post_test_recipe()
@@ -183,24 +183,24 @@ class RecipeTestCase(BaseTestCase):
         # Assert
         self.assertEqual(actual_category_name, expected_category_name)
 
-    def test_patch_category_name_keeps_description_without_changes(self):
+    def test_patch_recipe_name_keeps_description_without_changes(self):
         # Arrange
-        new_category_name = 'Category Name Patched'
-        expected_description = 'category description'
-        self.post_test_category()
+        new_recipe_name = 'Recipe title Patched'
+        expected_description = 'recipe description'
+        self.post_test_recipe()
 
         # Act
-        category = dict(category=dict(name=new_category_name))
+        category = dict(recipe=dict(title=new_recipe_name))
 
-        result = self.client.patch('/category/1',
+        result = self.client.patch('/recipe/1',
                                    data=json.dumps(category),
                                    content_type='application/json')
 
         content = json.loads(result.data)
-        actual_category_description = content['category']['description']
+        actual_recipe_description = content['recipe']['description']
 
         # Assert
-        self.assertEqual(actual_category_description, expected_description)
+        self.assertEqual(actual_recipe_description, expected_description)
 
 
 if __name__ == "__main__":
