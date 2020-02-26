@@ -9,7 +9,7 @@ from flask import Flask
 from flask_cors import CORS
 from infraestructure.database import db
 from infraestructure.config import environments
-from .authentication.auth import requires_auth
+from .authentication.auth import requires_auth, AuthError
 
 
 def setup_db(app, environment):
@@ -266,6 +266,24 @@ def not_found(error):
         'success': False
         }
         ), 404
+
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify(
+        {
+        'error': str(error),
+        'success': False
+        }
+        ), 400
+
+
+@app.errorhandler(AuthError)
+def authentification_failed(AuthError):
+    return jsonify({
+        "success": False,
+        "error": AuthError.status_code,
+        "message": AuthError.error['description']
+    }), AuthError.status_code
 # endregion
 
 

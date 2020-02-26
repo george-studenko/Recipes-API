@@ -29,16 +29,16 @@ def get_token_auth_header():
         bearer_token = request.headers['Authorization']
         token_parts = bearer_token.split(' ')
         if len(token_parts) != 2:
-            raise AuthError('Header is malformed', 400)
+            raise AuthError({'description':'Header is malformed'}, 400)
         token = token_parts[1]
         return token
     except Exception as exception:
-        raise AuthError('Header is not present', 401)
+        raise AuthError({'description':'Header is not present'}, 401)
 
 
 def check_permissions(permission, payload):
     if permission not in payload['permissions']:
-        raise AuthError('Unauthorized', 401)
+        raise AuthError({'description':'Unauthorized'}, 401)
     return True
 
 
