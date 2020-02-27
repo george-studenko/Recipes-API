@@ -17,7 +17,7 @@ def setup_db(app, environment):
     db.init_app(app)
 
 
-def create_app(environment='dev'):
+def create_app(environment='heroku'):
     app = Flask(__name__)
     app.url_map.strict_slashes = False
     setup_db(app, environment)

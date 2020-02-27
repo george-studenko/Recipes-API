@@ -49,20 +49,24 @@ These requirements are listed in ```requirements.txt```
 Requirements can be easily installed by executing:  
 ```pip install -r requirements.txt```
 
-## API Setup
+## Local API Setup
 When running for the first time it will be necessary to follow these steps:
 1. Create the postgres db with ```createdb recipesDB```
 1. Apply the database migrations with ```python manage.py db upgrade```
+1. Open ```api/controllers.py``` find the ```create_app``` method and replace ```environment='heroku'``` with 
+```environment='dev'```
 
-## Running the API
+## Running the API locally
 1. To run the API execute ```python manage.py run```
 
-## Test Setup
+## Local Test Setup
 When running the api tests for the first time it will be necessary to follow these steps:
 1. Create the postgres db with ```createdb recipesTestDB```
 1. Apply the database migrations with ```python manage.py db upgrade```
+1. Open ```tests/base_test_case.py```, find the ```create_app``` method and replace  ```app.config.from_object('infraestructure.config.Heroku_Test_Config')```
+ for ```app.config.from_object('infraestructure.config.Test_Config')``` 
 
-## Running the API Test
+## Running the local API Tests
 1. To run the API execute ```python manage.py test```
 
 ## Health Check

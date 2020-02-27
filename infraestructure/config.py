@@ -1,3 +1,6 @@
+import os
+
+
 class Config:
     DEBUG = False
 
@@ -21,9 +24,23 @@ class Test_Config(Config):
     DEBUG = True
 
 
+class Heroku_Config(Config):
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DEBUG = False
+
+
+class Heroku_Test_Config(Config):
+    SQLALCHEMY_DATABASE_URI = os.environ['HEROKU_POSTGRESQL_BRONZE_URL']
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DEBUG = False
+
+
 environments = dict(
     dev=Development_Config,
-    test=Test_Config
+    test=Test_Config,
+    heroku=Heroku_Config,
+    heroku_test=Heroku_Test_Config
 )
 
 auth0_config = {
