@@ -1,6 +1,19 @@
 # Recipes API
 This is a flask restful API for managing recipes.
 
+## Motivation
+The motivation behind this API is to learn and develop my skills programming with python at the same time trying to 
+create a well structure project with differentiated layers. 
+
+For a better architecture I've also included a 2nd branch which follows a more elaborated and maintainable architecture:
+```https://github.com/george-studenko/fs.capstone/tree/apiWithFlaskRestplus```  while it is not fully finished and 
+implemented it already contains the main components of the application.
+
+I also wanted to practice deploying apps to ```heroku```, integrating a third party authentication service as 
+```auth0``` and write some good unit tests.
+
+This API can be used as a starting point to develop other APIs.
+
 The API is hosted in heroku with the following url:  
 ```https://recipes-pro.herokuapp.com/health```
 
@@ -69,10 +82,37 @@ The ```/health``` enfpoint should return a ```200``` response with the following
 ```
 
 ## API Endpoints
-There are 4 resources in this endpoint:
 1. ```/health```: as described above. Allowed verbs are: ```GET```
-1. ```user```: To post users, required to post a recipe. Allowed verbs are: ```POST```
-1. ```category```: To manage recipe categories. Allowed verbs are: ```GET```, ```POST```, ```PATCH```, ```DELETE```
-1. ```recipe```: To manage recipes. Allowed verbs are: ```GET```, ```POST```, ```PATCH```, ```DELETE```
-## TO DO
+1. ```/user```: To post users, required to post a recipe. Allowed verbs are: ```POST```
+1. ```/category```: To get the list of categories and post a category. Allowed verbs are: ```GET```, ```POST```
+1. ```/category/<id>```: To manage recipe categories. Allowed verbs are: ```GET```, ```PATCH```, ```DELETE```
+1. ```/recipe```: To get a list of recipes and post recipes. Allowed verbs are: ```GET```, ```POST```
+1. ```/recipe/<id>```: To manage recipes. Allowed verbs are: ```GET```, ```PATCH```, ```DELETE```
+
+
+## User Roles
+Authentication is managed with ```Auth0```
+
+Two roles exist:
+1. ```cook```: this role is a read only role, users with this role are allowed to execute the ```GET``` 
+verb in all endpoints
+1. ```chef```: this role is a read and write role, allowing full access to all endpoints, ```chefs``` 
+are allowed to ```GET```,```POST```, ```PATCH``` and ```DELETE``` recipes and categories as well as ```POST``` users.
+
+## Testing the API
+
+To call the API protected endpoints a JWT token must be included as the Bearer token, below I'm providing a temporal 
+token for each role
+
+```cook``` bearer token:  
+
+```eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1qZ3pRemMyTXpORE1rRkdNRGRDUWpVeVFVUkZSa0UxTTBJek5EZEdSRFZDUWtKRk1qRkVRZyJ9.eyJpc3MiOiJodHRwczovL2duc2QuZXUuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTA0NjQ2Nzc4MTc2NDQ4MzE3OTIyIiwiYXVkIjpbIlJlY2lwZXNBUEkiLCJodHRwczovL2duc2QuZXUuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU4Mjc0ODUzNywiZXhwIjoxNTgyODM0OTM2LCJhenAiOiJPOXo0RkJ5U1dQNzJtdGNnejBmNDJRNUZGZlFoRTJzNyIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJnZXQ6Y2F0ZWdvcnkiLCJnZXQ6cmVjaXBlIl19.dMdwgRgicsbRepGSZnpL5bEkME2FJeU9elSBxcTAXUStyuQJHcWYVgP8A_3sonh9ywfiGRJnytE4dps_PQwqOMo8rlsBKRezrN4BzFmFtFpNGsIri_j3sCg6-0lvu58PCH45GgQjAyo3wLXDrQrvBALWENkEZhVnUM79tYSxMp-7Q5xlDFwXuga2E89vXE8cG8Rvnccf-5SRj-ttwLH7OwoGegVZAAhPrtz5p_jgrG__YyktofIfzh-BFOcV1qN13X6Po5QkXqQsDWQLc6T_7Za5he_qn2jwf-Vh0xqn8A0rmxpZwai8grp5Gq_CbbJjZsgvqFIq_sG0caKycycleQ```
+
+
+```chef``` bearer token:  
+
+```eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ik1qZ3pRemMyTXpORE1rRkdNRGRDUWpVeVFVUkZSa0UxTTBJek5EZEdSRFZDUWtKRk1qRkVRZyJ9.eyJpc3MiOiJodHRwczovL2duc2QuZXUuYXV0aDAuY29tLyIsInN1YiI6Imdvb2dsZS1vYXV0aDJ8MTEzMjE4MDA0MjE0OTE4ODk1ODU3IiwiYXVkIjpbIlJlY2lwZXNBUEkiLCJodHRwczovL2duc2QuZXUuYXV0aDAuY29tL3VzZXJpbmZvIl0sImlhdCI6MTU4Mjc1MjQzNCwiZXhwIjoxNTgyODM4ODMzLCJhenAiOiJPOXo0RkJ5U1dQNzJtdGNnejBmNDJRNUZGZlFoRTJzNyIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJwZXJtaXNzaW9ucyI6WyJkZWxldGU6Y2F0ZWdvcnkiLCJkZWxldGU6cmVjaXBlIiwiZ2V0OmNhdGVnb3J5IiwiZ2V0OnJlY2lwZSIsInBhdGNoOmNhdGVnb3J5IiwicGF0Y2g6cmVjaXBlIiwicG9zdDpjYXRlZ29yeSIsInBvc3Q6cmVjaXBlIiwicG9zdDp1c2VyIl19.z5GZXYJeF0h9b0bfQ7L4ZlnHiaW-CyfB328ou4LfyYr7egIIzCUsRU2jBcoqC7sdwnx-hEBSgwbCx1L40sgnvgS6VeonmaqfKbbxTU2YbHYs0_TPejpHag2N2CC0cy-tDgymug4o2ips8bOBoWiInRzBHIwHUlBG78nMKBt-qMtSnSLyNBeqi9Zu6Kag_ha0uBCfDbpsyWzFid7uE_RP4AlgpkEdyJW-9o7OaB3RjcI0tInQMsier9gMur8WQt9QZ2Bk_rWJtITMte-WoFXhwOqC1ZN0oZS4UiV3j5k5bzcmzYksttOMoqUOqa56RD_OoS3Hd1Br8_E6yL9Ufya60Q```
+
+## TO DO's
+1. Mock out the authentication to: speed up unit tests and make it possible to run them independently of the auth0 service
 1. Implement scriptline to automate database creation.
