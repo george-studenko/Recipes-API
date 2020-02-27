@@ -52,7 +52,7 @@ def post_user():
 
     response = jsonify({
         'success': True,
-        'recipe': inserted_user.format()
+        'user': inserted_user.format()
     })
 
     return response, 201
