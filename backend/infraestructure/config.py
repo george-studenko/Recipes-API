@@ -3,7 +3,8 @@ class Config:
 
 
 class Development_Config(Config):
-    database_name = 'recipesDB'
+    #database_name = 'recipesDB'
+    database_name = 'recipes'
     database_host = 'localhost:5432'
     SQLALCHEMY_DATABASE_URI = 'postgres://{}/{}'.format(database_host, database_name)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
