@@ -16,7 +16,7 @@ class BaseTestCase(TestCase):
     }
 
     def create_app(self):
-        app.config.from_object('infraestructure.config.Heroku_Test_Config')
+        app.config.from_object('infraestructure.config.Test_Config')
         return app
 
     def setUp(self):
