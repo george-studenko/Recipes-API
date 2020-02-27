@@ -109,7 +109,7 @@ class RecipeTestCase(BaseTestCase):
         # Assert
         self.assertEqual(actual_value, expected_value)
 
-    def test_get_categories_status_code_is_404_when_not_found(self):
+    def test_get_recipe_status_code_is_404_when_not_found(self):
         # Arrange
         expected_status_code = 404
 
@@ -120,7 +120,7 @@ class RecipeTestCase(BaseTestCase):
         # Assert
         self.assertEqual(actual_status_code, expected_status_code)
 
-    def test_get_category_by_id_returns_only_one_category(self):
+    def test_get_recipe_by_id_returns_only_one_category(self):
         # Arrange
         # When we have only one item json.loads will return a dictionary
         # while if we have multiple items it will return a list of dictionaries
@@ -134,7 +134,7 @@ class RecipeTestCase(BaseTestCase):
         actual_type = type(json.loads(result.data))
         self.assertEqual(expected_type, actual_type)
 
-    def test_delete_category(self):
+    def test_delete_recipe(self):
         # Arrange
         expected_status_code = 404
         self.post_test_recipe(token=self.chef_bearer_token)
@@ -148,7 +148,7 @@ class RecipeTestCase(BaseTestCase):
         # Assert
         self.assertEqual(actual_status_code, expected_status_code)
 
-    def test_delete_category_status_code_is_200_when_deleted(self):
+    def test_delete_recipe_status_code_is_200_when_deleted(self):
         # Arrange
         expected_status_code = 200
         self.post_test_recipe(token=self.chef_bearer_token)
