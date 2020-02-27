@@ -5,26 +5,26 @@ import unittest
 
 class CategoryTestCase(BaseTestCase):
 
-    def post_test_category(self, name = 'Category 1'):
+    def post_test_category(self, name='Category 1'):
         test_category = dict(category=dict(name=name,
-                                  description='category description',
-                                  slug='category-slug'))
+                                           description='category description',
+                                           slug='category-slug'))
 
         result = self.client.post('/category',
-                                  data= json.dumps(test_category),
-                                  content_type = 'application/json',
-                                  headers = self.chef_bearer_token)
+                                  data=json.dumps(test_category),
+                                  content_type='application/json',
+                                  headers=self.chef_bearer_token)
 
         return result
 
     def post_bad_test_category(self):
         test_category = dict(category=dict(description='category description',
-                                  slug='category-slug'))
+                                           slug='category-slug'))
 
         result = self.client.post('/category',
-                                  data= json.dumps(test_category),
-                                  content_type = 'application/json',
-                                  headers = self.chef_bearer_token)
+                                  data=json.dumps(test_category),
+                                  content_type='application/json',
+                                  headers=self.chef_bearer_token)
 
         return result
 
@@ -33,7 +33,7 @@ class CategoryTestCase(BaseTestCase):
         expected_status_code = 200
 
         # Act
-        result = self.client.get('/category', headers = self.cook_bearer_token)
+        result = self.client.get('/category', headers=self.cook_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -45,7 +45,7 @@ class CategoryTestCase(BaseTestCase):
         self.post_test_category()
 
         # Act
-        result = self.client.get('/category', headers = self.cook_bearer_token)
+        result = self.client.get('/category', headers=self.cook_bearer_token)
         content = json.loads(result.data)
         actual_value = content['categories'][0]['name']
 
@@ -56,10 +56,10 @@ class CategoryTestCase(BaseTestCase):
         # Arrange
         expected_value = 'Category 1'
         self.post_test_category()
-        self.post_test_category(name = 'Another Category')
+        self.post_test_category(name='Another Category')
 
         # Act
-        result = self.client.get('/category/1', headers= self.cook_bearer_token)
+        result = self.client.get('/category/1', headers=self.cook_bearer_token)
         content = json.loads(result.data)
         actual_value = content['category']['name']
 
@@ -71,7 +71,7 @@ class CategoryTestCase(BaseTestCase):
         expected_status_code = 404
 
         # Act
-        result = self.client.get('/category/2', headers= self.cook_bearer_token)
+        result = self.client.get('/category/2', headers=self.cook_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -87,7 +87,7 @@ class CategoryTestCase(BaseTestCase):
             self.post_test_category()
 
         # Act
-        result = self.client.get('/category/1', headers= self.cook_bearer_token)
+        result = self.client.get('/category/1', headers=self.cook_bearer_token)
         actual_type = type(json.loads(result.data))
         self.assertEqual(expected_type, actual_type)
 
@@ -98,7 +98,7 @@ class CategoryTestCase(BaseTestCase):
             self.post_test_category()
 
         # Act
-        result = self.client.get('/category', headers = self.cook_bearer_token)
+        result = self.client.get('/category', headers=self.cook_bearer_token)
         actual_category_count = len(json.loads(result.data)['categories'])
 
         self.assertEqual(expected_category_count, actual_category_count)
@@ -127,16 +127,15 @@ class CategoryTestCase(BaseTestCase):
         # Assert
         self.assertEqual(actual_status_code, expected_status_code)
 
-
     def test_delete_category(self):
         # Arrange
         expected_status_code = 404
         self.post_test_category()
 
         # Act
-        self.client.delete('/category/1', headers = self.chef_bearer_token)
+        self.client.delete('/category/1', headers=self.chef_bearer_token)
 
-        result = self.client.get('/category/1', headers = self.cook_bearer_token)
+        result = self.client.get('/category/1', headers=self.cook_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -148,7 +147,8 @@ class CategoryTestCase(BaseTestCase):
         self.post_test_category()
 
         # Act
-        result = self.client.delete('/category/1', headers = self.chef_bearer_token)
+        result = self.client.delete(
+            '/category/1', headers=self.chef_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -160,7 +160,8 @@ class CategoryTestCase(BaseTestCase):
         category = self.post_test_category()
 
         # Act
-        result = self.client.delete('/category/182', headers = self.chef_bearer_token)
+        result = self.client.delete(
+            '/category/182', headers=self.chef_bearer_token)
         actual_status_code = result.status_code
 
         # Assert
@@ -175,10 +176,9 @@ class CategoryTestCase(BaseTestCase):
         category = dict(category=dict(name=expected_category_name))
 
         result = self.client.patch('/category/1',
-                                   data= json.dumps(category),
-                                   content_type = 'application/json',
-                                   headers = self.chef_bearer_token)
-
+                                   data=json.dumps(category),
+                                   content_type='application/json',
+                                   headers=self.chef_bearer_token)
 
         content = json.loads(result.data)
         actual_category_name = content['category']['name']
@@ -196,16 +196,16 @@ class CategoryTestCase(BaseTestCase):
         category = dict(category=dict(name=new_category_name))
 
         result = self.client.patch('/category/1',
-                          data= json.dumps(category),
-                          content_type = 'application/json',
-                                   headers = self.chef_bearer_token)
-
+                                   data=json.dumps(category),
+                                   content_type='application/json',
+                                   headers=self.chef_bearer_token)
 
         content = json.loads(result.data)
         actual_category_description = content['category']['description']
 
         # Assert
         self.assertEqual(actual_category_description, expected_description)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

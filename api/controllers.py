@@ -1,15 +1,14 @@
+from .authentication.auth import requires_auth, AuthError
+from infraestructure.config import environments
+from infraestructure.database import db
+from flask_cors import CORS
+from flask import Flask
+from service.health_service import Health_Service
+from domain.models import *
+from flask import jsonify, request, abort
 import sys
 from os.path import dirname, join, abspath
 sys.path.insert(0, abspath(join(dirname(__file__), '..')))
-
-from flask import jsonify, request, abort
-from domain.models import *
-from service.health_service import Health_Service
-from flask import Flask
-from flask_cors import CORS
-from infraestructure.database import db
-from infraestructure.config import environments
-from .authentication.auth import requires_auth, AuthError
 
 
 def setup_db(app, environment):
@@ -24,6 +23,8 @@ def create_app(environment='dev'):
     setup_db(app, environment)
     CORS(app)
     return app
+
+
 app = create_app()
 
 health_service = Health_Service()
@@ -45,7 +46,7 @@ def post_user():
     data = json['user']
 
     if data.get('username') is None:
-        abort(422,'username is required')
+        abort(422, 'username is required')
     user = create_user_from_json(data)
     inserted_user = user.insert()
 
@@ -66,12 +67,13 @@ def get_recipes():
     '''Get the list of all recipes'''
     recipes = Recipe.query.all()
     if len(recipes) is 0:
-        abort(404,'No recipes found')
+        abort(404, 'No recipes found')
     formatted_recipes = [recipe.format() for recipe in recipes]
     return jsonify({
         'success': True,
         'recipes': formatted_recipes
     }), 200
+
 
 @app.route('/recipe/<id>', methods=['GET'])
 @requires_auth(permission='get:recipe')
@@ -87,6 +89,7 @@ def get_recipe(id):
     })
     return response
 
+
 @app.route('/recipe', methods=['POST'])
 @requires_auth(permission='post:recipe')
 def post_recipe():
@@ -95,7 +98,7 @@ def post_recipe():
 
     data = json['recipe']
     if data.get('title') is None:
-        abort(422,'Title is required')
+        abort(422, 'Title is required')
 
     recipe = create_recipe_from_json(data)
     inserted_recipe = recipe.insert()
@@ -117,7 +120,7 @@ def delete_recipe(id):
         abort(404)
 
     recipe.delete()
-    response = jsonify( {
+    response = jsonify({
         'success': True
     })
     return response, 200
@@ -126,9 +129,9 @@ def delete_recipe(id):
 @app.route('/recipe/<id>', methods=['PATCH'])
 @requires_auth(permission='patch:recipe')
 def patch_recipe(id):
-    original_recipe =  Recipe.query.get(id)
+    original_recipe = Recipe.query.get(id)
     if original_recipe is None:
-        abort(404,'category does not exist')
+        abort(404, 'category does not exist')
 
     json_recipe = request.get_json()
     recipe = create_recipe_from_json(json_recipe['recipe'])
@@ -160,7 +163,7 @@ def get_categories():
     '''Get the list of all cagegories'''
     categories = Category.query.all()
     if categories is None:
-        abort(404,'No categories found')
+        abort(404, 'No categories found')
     formatted_categories = [category.format() for category in categories]
     return jsonify({
         'success': True,
@@ -192,7 +195,7 @@ def post_category():
     data = json['category']
 
     if data.get('name') is None:
-        abort(422,'Name is required')
+        abort(422, 'Name is required')
     category = create_category_from_json(data)
     inserted_category = category.insert()
 
@@ -213,7 +216,7 @@ def delete_category(id):
         abort(404)
 
     category.delete()
-    response = jsonify( {
+    response = jsonify({
         'success': True
     })
     return response, 200
@@ -222,9 +225,9 @@ def delete_category(id):
 @app.route('/category/<id>', methods=['PATCH'])
 @requires_auth(permission='patch:category')
 def patch_category(id):
-    original_category =  Category.query.get(id)
+    original_category = Category.query.get(id)
     if original_category is None:
-        abort(404,'category does not exist')
+        abort(404, 'category does not exist')
 
     json_category = request.get_json()
     category = create_category_from_json(json_category['category'])
@@ -252,29 +255,30 @@ def patch_category(id):
 def unprocessable_entity(error):
     return jsonify(
         {
-        'error': str(error),
-        'success': False
+            'error': str(error),
+            'success': False
         }
-        ), 422
+    ), 422
 
 
 @app.errorhandler(404)
 def not_found(error):
     return jsonify(
         {
-        'error': str(error),
-        'success': False
+            'error': str(error),
+            'success': False
         }
-        ), 404
+    ), 404
+
 
 @app.errorhandler(400)
 def bad_request(error):
     return jsonify(
         {
-        'error': str(error),
-        'success': False
+            'error': str(error),
+            'success': False
         }
-        ), 400
+    ), 400
 
 
 @app.errorhandler(AuthError)
@@ -289,18 +293,19 @@ def authentification_failed(AuthError):
 
 # region Helper Methods
 def create_category_from_json(json_data):
-       return Category(name=json_data.get('name'),
-                       description= json_data.get('description'),
-                       slug=json_data.get('slug'))
+    return Category(name=json_data.get('name'),
+                    description=json_data.get('description'),
+                    slug=json_data.get('slug'))
+
 
 def create_recipe_from_json(json_data):
     return Recipe(title=json_data.get('title'),
-                    description=json_data.get('description'),
-                    ingredients=json_data.get('ingredients'),
-                    steps=json_data.get('steps'),
-                    url=json_data.get('url'),
-                    user_id=json_data.get('user_id'),
-                    category_id = json_data.get('category_id')
+                  description=json_data.get('description'),
+                  ingredients=json_data.get('ingredients'),
+                  steps=json_data.get('steps'),
+                  url=json_data.get('url'),
+                  user_id=json_data.get('user_id'),
+                  category_id=json_data.get('category_id')
                   )
 
 
@@ -308,4 +313,3 @@ def create_user_from_json(json_data):
     return User(username=json_data.get('username'))
 
 # endregion
-

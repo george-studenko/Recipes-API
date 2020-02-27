@@ -1,6 +1,6 @@
 from flask_testing import TestCase
 import warnings
-from infraestructure.database import  db
+from infraestructure.database import db
 from api.controllers import app
 from infraestructure.config import bearer_tokens
 
@@ -14,6 +14,7 @@ class BaseTestCase(TestCase):
     chef_bearer_token = {
         'Authorization': bearer_tokens['chef']
     }
+
     def create_app(self):
         app.config.from_object('infraestructure.config.Test_Config')
         return app

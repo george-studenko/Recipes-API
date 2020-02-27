@@ -7,20 +7,19 @@ class UserTestCase(BaseTestCase):
 
     def post_test_user(self):
         test_user = dict(user=dict(username='username1'))
-        result =self.client.post('/user',
-                         data=json.dumps(test_user),
-                         content_type='application/json',
-                         headers = self.chef_bearer_token)
+        result = self.client.post('/user',
+                                  data=json.dumps(test_user),
+                                  content_type='application/json',
+                                  headers=self.chef_bearer_token)
         return result
 
     def post_bad_user(self):
         test_user = dict(user=dict(some_key='missing username'))
-        result =self.client.post('/user',
-                         data=json.dumps(test_user),
-                         content_type='application/json',
-                         headers = self.chef_bearer_token)
+        result = self.client.post('/user',
+                                  data=json.dumps(test_user),
+                                  content_type='application/json',
+                                  headers=self.chef_bearer_token)
         return result
-
 
     def test_post_user_as_cook_status_code_is_401(self):
         # Arrange
@@ -37,7 +36,6 @@ class UserTestCase(BaseTestCase):
 
         # Assert
         self.assertEqual(actual_status_code, expected_status_code)
-
 
     def test_post_user_status_code_is_201(self):
         # Arrange

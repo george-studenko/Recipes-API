@@ -1,5 +1,6 @@
 from infraestructure.database import db
 
+
 class Recipe(db.Model):
     __tablename__ = 'Recipe'
 
@@ -11,7 +12,10 @@ class Recipe(db.Model):
     url = db.Column(db.String)
 
     user_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('Category.id'), nullable=False)
+    category_id = db.Column(
+        db.Integer,
+        db.ForeignKey('Category.id'),
+        nullable=False)
 
     def __init__(self, title, description, ingredients,
                  steps, url, user_id, category_id):
@@ -48,6 +52,7 @@ class Recipe(db.Model):
             'category_id': self.category_id
         }
 
+
 class Category(db.Model):
     __tablename__ = 'Category'
 
@@ -58,7 +63,7 @@ class Category(db.Model):
 
     recipes = db.relationship('Recipe', backref='Category')
 
-    def __init__(self, name, description= None, slug= None):
+    def __init__(self, name, description=None, slug=None):
         self.slug = slug
         self.name = name
         self.description = description
@@ -78,11 +83,12 @@ class Category(db.Model):
 
     def format(self):
         return {
-                'id': self.id,
-                'name': self.name,
-                'description': self.description,
-                'slug': self.slug
+            'id': self.id,
+            'name': self.name,
+            'description': self.description,
+            'slug': self.slug
         }
+
 
 class User(db.Model):
     __tablename__ = 'User'
