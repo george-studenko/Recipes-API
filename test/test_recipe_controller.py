@@ -5,7 +5,7 @@ import unittest
 
 class RecipeTestCase(BaseTestCase):
 
-    def post_test_recipe(self, title = 'Recipe 1'):
+    def post_test_recipe(self, token, title = 'Recipe 1'):
 
         test_category = dict(category=dict(name='Category 1',
                                            description='category description',
@@ -13,13 +13,13 @@ class RecipeTestCase(BaseTestCase):
         self.client.post('/category',
                                   data=json.dumps(test_category),
                                   content_type='application/json',
-                         headers = self.chef_bearer_token)
+                         headers = token)
 
         test_user = dict(user=dict(username='username1'))
         self.client.post('/user',
                          data=json.dumps(test_user),
                          content_type='application/json',
-                         headers = self.chef_bearer_token)
+                         headers = token)
 
         test_recipe = dict(recipe=dict(title=title,
                                   description='recipe description',
@@ -31,7 +31,7 @@ class RecipeTestCase(BaseTestCase):
         result = self.client.post('/recipe',
                                   data= json.dumps(test_recipe),
                                   content_type = 'application/json',
-                                  headers = self.chef_bearer_token)
+                                  headers = token)
 
         return result
 
@@ -49,7 +49,7 @@ class RecipeTestCase(BaseTestCase):
     def test_get_recipe_status_code_is_200_when_recipes_exist(self):
         # Arrange
         expected_status_code = 200
-        self.post_test_recipe()
+        self.post_test_recipe(token = self.chef_bearer_token)
 
         # Act
         result = self.client.get('/recipe', headers = self.cook_bearer_token)
@@ -74,7 +74,8 @@ class RecipeTestCase(BaseTestCase):
         expected_status_code = 201
 
         # Act
-        result = self.post_test_recipe()
+        result = self.post_test_recipe(token = self.chef_bearer_token)
+
 
         actual_status_code = result.status_code
 
@@ -96,8 +97,8 @@ class RecipeTestCase(BaseTestCase):
     def test_get_recipe_by_id_returns_correct_recipe(self):
         # Arrange
         expected_value = 'Recipe 1'
-        self.post_test_recipe()
-        self.post_test_recipe(title = 'Another Recipe 2')
+        self.post_test_recipe(token=self.chef_bearer_token)
+        self.post_test_recipe(token=self.chef_bearer_token, title = 'Another Recipe 2')
 
         # Act
         result = self.client.get('/recipe/1', headers = self.cook_bearer_token)
@@ -125,7 +126,7 @@ class RecipeTestCase(BaseTestCase):
         # so we assume that if the type is a dict then it is a single category
         expected_type = type({})
         for i in range(3):
-            self.post_test_recipe()
+            self.post_test_recipe(token=self.chef_bearer_token)
 
         # Act
         result = self.client.get('/recipe/1', headers = self.cook_bearer_token)
@@ -135,7 +136,7 @@ class RecipeTestCase(BaseTestCase):
     def test_delete_category(self):
         # Arrange
         expected_status_code = 404
-        self.post_test_recipe()
+        self.post_test_recipe(token=self.chef_bearer_token)
 
         # Act
         self.client.delete('/recipe/1', headers = self.chef_bearer_token)
@@ -149,7 +150,7 @@ class RecipeTestCase(BaseTestCase):
     def test_delete_category_status_code_is_200_when_deleted(self):
         # Arrange
         expected_status_code = 200
-        self.post_test_recipe()
+        self.post_test_recipe(token=self.chef_bearer_token)
 
         # Act
         result = self.client.delete('/recipe/1', headers = self.chef_bearer_token)
@@ -161,7 +162,7 @@ class RecipeTestCase(BaseTestCase):
     def test_delete_recipe_status_code_is_404_when_not_found(self):
         # Arrange
         expected_status_code = 404
-        self.post_test_recipe()
+        self.post_test_recipe(token=self.chef_bearer_token)
 
         # Act
         result = self.client.delete('/recipe/182', headers = self.chef_bearer_token)
@@ -173,7 +174,7 @@ class RecipeTestCase(BaseTestCase):
     def test_patch_recipe_name(self):
         # Arrange
         expected_category_name = 'Category Name Patched'
-        self.post_test_recipe()
+        self.post_test_recipe(token=self.chef_bearer_token)
 
         # Act
         category = dict(category=dict(name=expected_category_name))
@@ -192,7 +193,7 @@ class RecipeTestCase(BaseTestCase):
         # Arrange
         new_recipe_name = 'Recipe title Patched'
         expected_description = 'recipe description'
-        self.post_test_recipe()
+        self.post_test_recipe(token=self.chef_bearer_token)
 
         # Act
         category = dict(recipe=dict(title=new_recipe_name))
@@ -207,6 +208,18 @@ class RecipeTestCase(BaseTestCase):
         # Assert
         self.assertEqual(actual_recipe_description, expected_description)
 
+    def test_post_recipe_as_cook_status_code_is_401(self):
+        # Arrange
+        expected_status_code = 401
+
+        # Act
+        result = self.post_test_recipe(token=self.cook_bearer_token)
+
+
+        actual_status_code = result.status_code
+
+        # Assert
+        self.assertEqual(actual_status_code, expected_status_code)
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

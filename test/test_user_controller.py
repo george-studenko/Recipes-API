@@ -21,6 +21,24 @@ class UserTestCase(BaseTestCase):
                          headers = self.chef_bearer_token)
         return result
 
+
+    def test_post_user_as_cook_status_code_is_401(self):
+        # Arrange
+        expected_status_code = 401
+        test_user = dict(user=dict(username='username1'))
+
+        # Act
+        result = self.client.post('/user',
+                                  data=json.dumps(test_user),
+                                  content_type='application/json',
+                                  headers=self.cook_bearer_token)
+
+        actual_status_code = result.status_code
+
+        # Assert
+        self.assertEqual(actual_status_code, expected_status_code)
+
+
     def test_post_user_status_code_is_201(self):
         # Arrange
         expected_status_code = 201
