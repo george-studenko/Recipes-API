@@ -30,7 +30,7 @@ app = create_app()
 health_service = Health_Service()
 
 # region Health Controller
-@app.route('/health')
+@app.route('/health', methods=['GET'])
 def check_health():
     response = health_service.check_health()
     return response
