@@ -6,7 +6,7 @@ The motivation behind this API is to learn and develop my skills programming wit
 create a well structure project with differentiated layers. 
 
 For a better architecture I've also included a 2nd branch which follows a more elaborated and maintainable architecture:
-```https://github.com/george-studenko/fs.capstone/tree/apiWithFlaskRestplus```  while it is not fully finished and 
+```https://github.com/george-studenko/Recipes-API/tree/apiWithFlaskRestplus```  while it is not fully finished and 
 implemented it already contains the main components of the application.
 
 I also wanted to practice deploying apps to ```heroku```, integrating a third party authentication service as 
