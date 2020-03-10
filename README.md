@@ -119,3 +119,4 @@ token for each role
 ## TO DO's
 1. Mock out the authentication to: speed up unit tests and make it possible to run them independently of the auth0 service
 1. Implement scriptline to automate database creation.
+1. Move logic to Service layer
